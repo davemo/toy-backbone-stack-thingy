@@ -21,7 +21,7 @@
 					newContainerId = config.containerId+'-view-'+$views.length;
 			
 			slideOut($views.last());
-			var $new =$('<div id="'+newContainerId+'" class="stack-view"></div>').hide().appendTo($container);
+			var $new =$('<div id="'+newContainerId+'" class="stack-view"></div>').hide().appendTo($container); // newStack
 			view.view.apply(this,[$.extend(view.config,{ 
 				containerId: newContainerId 
 			})]);						

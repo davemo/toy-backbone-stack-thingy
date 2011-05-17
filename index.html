@@ -2,27 +2,92 @@
 	<head>		
 		<link rel="stylesheet" type="text/css" media="screen" href="some.css" />
 		
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>		
-		
-		<script type="text/javascript" src="https://gist.github.com/raw/661855/89a024203615951aa8384071e0a408283b44c6a7/jquery.ba-tinypubsub.min.js"></script>		
-		<script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
-		
-		<script type="text/javascript" src="stack.js"></script>
-		
-		
-	</head>
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="underscore.js"></script>
+    <script type="text/javascript" src="backbone.js"></script>
+    
+ </head>
 	<body>
 		
 		<div id="stack"></div>
 		
-		<script type="text/javascript">
-			$(function(){
-				stack({
-					containerId: 'stack',
-					top: { view: WidgetA, config:{id:0} }
-				})
-			})		
+		<script id="stack-template" type="text/html">
+		  <h1>Welcome to Widget <%= stack.id %></h1>
+      <div id="<%= stack.id %>" class="stack-view">
+        <ul>
+          <% _.each(stack.links, function(link, i) { %>
+            <li><a href="#/widget/<%= link.href %>" class="stack-push"><%= link.name %> #<%= i %></a></li>
+          <% }); %>
+        </ul>
+      </div>
 		</script>
+		
+		<script type="text/javascript">
+		
+		  WidgetA = {
+		    id: 'A',
+		    links: [
+		      {id: 1, name: 'Go see B', href:'B'},
+		      {id: 2, name: 'Go see C', href:'C'},
+		      {id: 2, name: 'Another thing to see B', href:'B'},
+		      {id: 2, name: 'W00t, c?', href:'C'}
+		      
+		    ]
+		  };
+		  
+		  WidgetB = {
+		    id: 'B',
+		    links: [
+		      {id: 1, name: 'Only goes to A', href:'A'}
+		    ]
+		  };
+		  
+		  WidgetC = {
+		    id: 'C',
+		    links: [
+		      {id: 1, name: 'I can haz A?', href:'A'},
+		      {id: 2, name: 'You can haz B?', href:'B'}
+		    ]
+		  };
+		  
+		  Widgets = [WidgetA, WidgetB, WidgetC];
+		
+  	  var StackView = Backbone.View.extend({
+	      el: '#stack',
+	    
+  	    template: _.template($("#stack-template").html()),
+	    
+  	    initialize: function() {},
+	    
+  	    render: function() {
+	        $(this.el).html(this.template({
+	          stack: this.model
+	        }));
+  	    }
+  	  });
+		
+		  var StackController = new (Backbone.Controller.extend({
+		    routes: {
+		      '/widget/:id':      'widget'
+		    },
+		    
+		    widget: function(id) {
+		      new StackView({
+		        model: _.select(Widgets, function(widget) {
+		          return widget.id === id;
+		        })[0]
+		      }).render();
+		    }
+		  }))();
+		  
+		  Backbone.history.start();
+		</script>
+
+    <!-- kick off the app -->
+    <script>
+      if(!window.location.hash) {
+        window.location.hash = "#/widget/A";
+      }
+    </script>
 	</body>
 </html>

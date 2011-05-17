@@ -7,25 +7,32 @@
 		var findViews = function() {
 			return $container.find('.stack-view');
 		};
+		
+		var slideIn = function($target,dir) {
+			$target.show('slide',{direction: dir || 'right'},500)
+		};
+		
+		var slideOut = function($target) {
+			$target.addClass('absolute').hide('slide',{direction:'left'},500);
+		};
 
 		var push = function(view) {
 			var $views = findViews(),
 					newContainerId = config.containerId+'-view-'+$views.length;
 			
-			
-			$views.last().addClass('absolute').hide('slide',{direction:'left'},400);
+			slideOut($views.last());
 			var $new =$('<div id="'+newContainerId+'" class="stack-view"></div>').hide().appendTo($container);
 			view.view.apply(this,[$.extend(view.config,{ 
 				containerId: newContainerId 
 			})]);						
-			$new.show('slide',{direction:'right'},500)
+			slideIn($new); //This helped in IE6 a bit: setTimeout(function() {slideIn($new)},150);
 			
 			$.publish('stack/push');
 		};
 
 		var pop = function() {
 			findViews().last().remove();
-			findViews().last().removeClass('absolute').show('slide',{direction:'left'},500);
+			slideIn(findViews().last(),'left')
 			$.publish('stack/pop');
 		}
 		
@@ -55,22 +62,22 @@
 	};
 
 	WidgetA = function(config) {
-		var $into = $('#'+config.containerId).append('<h1>Welcome to Widget A!</h1>');
+		var $into = $('#'+config.containerId).append('<h1>Welcome to Widget A #'+config.id+'!</h1>');
 		appendLinks($into,'B',3);
 	}
 
 	WidgetB = function(config) {
-		var $into = $('#'+config.containerId).append('<h2>Welcome to Widget B!</h2>');    
+		var $into = $('#'+config.containerId).append('<h2>Welcome to Widget B #'+config.id+'!</h2>');    
 		appendLinks($into,'C',7)
 	}
 
 	WidgetC = function(config) {
-		var $into = $('#'+config.containerId).append('<h3>Welcome to Widget C!</h3>');    
+		var $into = $('#'+config.containerId).append('<h3>Welcome to Widget C #'+config.id+'!</h3>');    
 		appendLinks($into,'D',123)
 	}
 
 	WidgetD = function(config) {
-		var $into = $('#'+config.containerId).append('<h4>Welcome to Widget D!</h4>');    
+		var $into = $('#'+config.containerId).append('<h4>Welcome to Widget D #'+config.id+'!</h4>');    
 		appendLinks($into,'A',1)
 	}
 

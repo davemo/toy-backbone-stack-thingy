@@ -2,7 +2,7 @@
 
 	stack = function(config) {
 		var $container = $('#'+config.containerId);
-		$('<a href="#" class="stack-pop"><-- Back</a>').hide().appendTo($container);
+		$('<div class="navigator"><a href="#" class="stack-pop"> <- Back</a></div>').appendTo($container);
 
 		var findViews = function() {
 			return $container.find('.stack-view');
@@ -13,7 +13,7 @@
 					newContainerId = config.containerId+'-view-'+$views.length;
 			
 			
-			$views.last().hide();
+			$views.last().addClass('absolute').hide('slide',{direction:'left'},400);
 			var $new =$('<div id="'+newContainerId+'" class="stack-view"></div>').hide().appendTo($container);
 			view.view.apply(this,[$.extend(view.config,{ 
 				containerId: newContainerId 
@@ -25,7 +25,7 @@
 
 		var pop = function() {
 			findViews().last().remove();
-			findViews().last().show('slide',{direction:'left'},500);
+			findViews().last().removeClass('absolute').show('slide',{direction:'left'},500);
 			$.publish('stack/pop');
 		}
 		

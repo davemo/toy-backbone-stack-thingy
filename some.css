@@ -1,9 +1,25 @@
 body {
-	background-color: #000;
+	background-color: #111;
 }
+
+.navigator {	
+	height: 30px;
+}
+
+.stack-pop {
+	color: #fff;
+	display: none;
+}
+
 .stack-view {
 	padding: 0 0 10 25;
 	width:500px;
 	border: 3px solid #ccc;
 	background-color: #fff;
+	
+	display:inline-block; /* to enable the side-by-side scrolling */
+}
+
+.absolute {
+	position: absolute;
 }
